@@ -6,14 +6,15 @@
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css">
     <style>
-
-        body, html {
+        body,
+        html {
             width: 100%;
             height: 100%;
             margin: 0;
             padding: 0;
             overflow: hidden;
         }
+
         #map {
             height: calc(100vh - 56px);
             width: 100%;
@@ -51,10 +52,11 @@
                         <div class="mb-3">
                             <label for="image" class="form-label">Image</label>
                             <input type="file" class="form-control" id="image" name="image"
-                            onchange="document.getElementById('preview-image-point').src = window.URL.createObjectURL(this.files[0])">
+                                onchange="document.getElementById('preview-image-point').src = window.URL.createObjectURL(this.files[0])">
                         </div>
                         <div class="mb-3">
-                        <img src="" alt="" id="preview-image-point" class="img-thumbnail" width="400">
+                            <img src="" alt="" id="preview-image-point" class="img-thumbnail"
+                                width="400">
                         </div>
 
                     </div>
@@ -95,10 +97,11 @@
                         <div class="mb-3">
                             <label for="image" class="form-label">Image</label>
                             <input type="file" class="form-control" id="image" name="image"
-                            onchange="document.getElementById('preview-image-polyline').src = window.URL.createObjectURL(this.files[0])">
+                                onchange="document.getElementById('preview-image-polyline').src = window.URL.createObjectURL(this.files[0])">
                         </div>
                         <div class="mb-3">
-                        <img src="" alt="" id="preview-image-polyline" class="img-thumbnail" width="400">
+                            <img src="" alt="" id="preview-image-polyline" class="img-thumbnail"
+                                width="400">
                         </div>
 
                     </div>
@@ -139,10 +142,11 @@
                         <div class="mb-3">
                             <label for="image" class="form-label">Image</label>
                             <input type="file" class="form-control" id="image" name="image"
-                            onchange="document.getElementById('preview-image-polygon').src = window.URL.createObjectURL(this.files[0])">
+                                onchange="document.getElementById('preview-image-polygon').src = window.URL.createObjectURL(this.files[0])">
                         </div>
                         <div class="mb-3">
-                        <img src="" alt="" id="preview-image-polygon" class="img-thumbnail" width="400">
+                            <img src="" alt="" id="preview-image-polygon" class="img-thumbnail"
+                                width="400">
                         </div>
 
                     </div>
@@ -258,14 +262,23 @@
             // Style
 
             // onEachFeature
-
             onEachFeature: function(feature, layer) {
+
+                //Route delete point
+                var routedelete = "{{ route('point.delete', ':id') }}";
+                routedelete = routedelete.replace(':id', feature.properties.id);
+
                 // variable popup content
                 var popup_content = "Nama: " + feature.properties.name + "<br>" +
                     "Deskripsi: " + feature.properties.description + "<br>" +
                     "Dibuat pada: " + feature.properties.created_at + "<br>" +
                     "<img src='{{ asset('storage/images/') }}/" + feature.properties.image +
-                    "' alt='' class='img-thumbnail' width='400'>";
+                    "' alt='' class='img-thumbnail' width='400'>" + "<br><br>" +
+                    "<form action='" + routedelete + "' method='POST'>" +
+                    '@csrf' +
+                    '@method('DELETE')' +
+                    "<button type='submit' class='btn btn-danger btn-sm' title='Delete Feature' onclick='return confirm(\"Are you sure you want to delete this feature?\")'>Delete</button>" +
+                    "</form>";
 
                 layer.on({
                     click: function(e) {
@@ -282,19 +295,26 @@
         });
 
         //polyline layer
-        //point layer
-        // GeoJSON Points
+        // GeoJSON Polyline
         var polyline = L.geoJSON(null, {
-            // Style
+
 
             // onEachFeature
-
             onEachFeature: function(feature, layer) {
+                //Route delete polyline
+                var routedelete = "{{ route('polyline.delete', ':id') }}";
+                routedelete = routedelete.replace(':id', feature.properties.id);
                 // variable popup content
                 var popup_content = "Nama: " + feature.properties.name + "<br>" +
                     "Deskripsi: " + feature.properties.description + "<br>" +
-                    "Dibuat pada: " + feature.properties.created_at + "<br>" +  "<img src='{{ asset('storage/images/') }}/" + feature.properties.image +
-                    "' alt='' class='img-thumbnail' width='400'>";
+                    "Dibuat pada: " + feature.properties.created_at + "<br>" +
+                    "<img src='{{ asset('storage/images/') }}/" + feature.properties.image +
+                    "' alt='' class='img-thumbnail' width='400'>" + "<br><br>" +
+                    "<form action='" + routedelete + "' method='POST'>" +
+                    '@csrf' +
+                    '@method('DELETE')' +
+                    "<button type='submit' class='btn btn-danger btn-sm' title='Delete Feature' onclick='return confirm(\"Are you sure you want to delete this feature?\")'>Delete</button>" +
+                    "</form>";
 
                 layer.on({
                     click: function(e) {
@@ -311,18 +331,27 @@
         });
 
         //polygon layer
-        // GeoJSON Points
+        // GeoJSON Polygon
         var polygon = L.geoJSON(null, {
-            // Style
+
 
             // onEachFeature
 
             onEachFeature: function(feature, layer) {
+                //Route delete polygon
+                var routedelete = "{{ route('polygon.delete', ':id') }}";
+                routedelete = routedelete.replace(':id', feature.properties.id);
                 // variable popup content
                 var popup_content = "Nama: " + feature.properties.name + "<br>" +
                     "Deskripsi: " + feature.properties.description + "<br>" +
-                    "Dibuat pada: " + feature.properties.created_at + "<br>" + "<img src='{{ asset('storage/images/') }}/" + feature.properties.image +
-                    "' alt='' class='img-thumbnail' width='400'>";
+                    "Dibuat pada: " + feature.properties.created_at + "<br>" +
+                    "<img src='{{ asset('storage/images/') }}/" + feature.properties.image +
+                    "' alt='' class='img-thumbnail' width='400'>" + "<br><br>" +
+                    "<form action='" + routedelete + "' method='POST'>" +
+                    '@csrf' +
+                    '@method('DELETE')' +
+                    "<button type='submit' class='btn btn-danger btn-sm' title='Delete Feature' onclick='return confirm(\"Are you sure you want to delete this feature?\")'>Delete</button>" +
+                    "</form>";
 
                 layer.on({
                     click: function(e) {
@@ -340,7 +369,7 @@
 
         // Control Layer
         var baseMaps = {
-          //j
+            //j
         };
 
         var overlayMaps = {

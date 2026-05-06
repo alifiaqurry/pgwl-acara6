@@ -62,4 +62,26 @@ class PointsController extends Controller
 
         return redirect()->route('peta')->with('success', 'Point saved successfully.');
     }
+
+    public function destroy(string $id)
+    {
+        //hapus gambar
+        $image = $this->points->find($id)->image;
+
+        // Cek jika gambar ada, lalu hapus
+        if (!$this->points->destroy($id)) {
+            return redirect()->route('peta')->with('error', 'Failed to delete point data. Please try again.');
+        }
+
+        //hapus file gambar jika ada
+        if ($image != null) {;
+            if (file_exists('.storage/images/' . $image)) {
+                unlink('.storage/images/' . $image);
+            }
+        }
+
+        // Menegembalikan
+        return redirect()->route('peta')->with('success', 'Point deleted successfully.');
+    }
+
 }
